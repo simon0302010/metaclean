@@ -1,8 +1,15 @@
-import sys
-
 from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel, QFileDialog, QVBoxLayout, QHBoxLayout, QWidget, QListWidget, QListWidgetItem
-
+from PyQt5.QtWidgets import (
+    QMainWindow,
+    QPushButton,
+    QLabel,
+    QFileDialog,
+    QVBoxLayout,
+    QHBoxLayout,
+    QWidget,
+    QListWidget,
+    QListWidgetItem
+)
 
 class MetaClean(QMainWindow):
     def __init__(self):
@@ -44,5 +51,6 @@ class MetaClean(QMainWindow):
         dlg.setNameFilter("Images (*.png *.jpg *.jpeg *.bmp *.gif)")
         if dlg.exec_():
             for filepath in dlg.selectedFiles():
-                new_item = QListWidgetItem(filepath)
-                self.file_list.addItem(new_item)
+                if filepath not in self.file_list:
+                    new_item = QListWidgetItem(filepath)
+                    self.file_list.addItem(new_item)

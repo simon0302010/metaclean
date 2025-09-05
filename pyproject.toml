@@ -20,6 +20,9 @@ classifiers = [
     "Operating System :: Microsoft :: Windows"
 ]
 
+[project.optional-dependencies]
+dev = ["build", "twine", "ruff"]
+
 [project.urls]
 Homepage = "https://github.com/simon0302010/metaclean"
 
