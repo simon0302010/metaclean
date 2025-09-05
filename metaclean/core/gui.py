@@ -1,7 +1,7 @@
 import sys
 
 from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel, QFileDialog, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel, QFileDialog, QVBoxLayout, QHBoxLayout, QWidget, QListWidget, QListWidgetItem
 
 
 class MetaClean(QMainWindow):
@@ -13,29 +13,36 @@ class MetaClean(QMainWindow):
         self.setWindowTitle("MetaClean")
         self.setMinimumSize(QSize(400, 300))
         
-        self.show_start()
+        self.setup_ui()
         
-    def show_start(self):
-        label = QLabel("Select image files to remove their metadata.")
-        label.setAlignment(Qt.AlignCenter)
+    def setup_ui(self):
+        layoutH = QHBoxLayout()
+        layoutV1 = QVBoxLayout()
+        layoutV2 = QVBoxLayout()
 
-        button = QPushButton("Select Images")
-        button.clicked.connect(self.open_file)
+        layoutH.setSpacing(20)
 
-        layout = QVBoxLayout()
-        layout.addStretch()
-        layout.addWidget(label)
-        layout.addWidget(button, alignment=Qt.AlignCenter)
-        layout.addStretch()
+        # add widgets
+        self.file_list = QListWidget()
+        layoutV1.addWidget(self.file_list)
+
+        button = QPushButton("Add Images")
+        button.clicked.connect(self.add_files)
+        layoutV1.addWidget(button, alignment=Qt.AlignBottom)
+
+        layoutH.addLayout(layoutV1, 1)
+        layoutH.addLayout(layoutV2, 1)
 
         container = QWidget()
-        container.setLayout(layout)
+        container.setLayout(layoutH)
 
         self.setCentralWidget(container)
         
-    def open_file(self):
+    def add_files(self):
         dlg = QFileDialog(self)
         dlg.setFileMode(QFileDialog.ExistingFiles)
         dlg.setNameFilter("Images (*.png *.jpg *.jpeg *.bmp *.gif)")
         if dlg.exec_():
-            self.filenames = dlg.selectedFiles()
+            for filepath in dlg.selectedFiles():
+                new_item = QListWidgetItem(filepath)
+                self.file_list.addItem(new_item)
