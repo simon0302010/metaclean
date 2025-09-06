@@ -161,7 +161,15 @@ class MetaClean(QMainWindow):
                 )
                 if reply == QMessageBox.Yes:
                     if self.process_images:
-                        self.process_images(self.filenames, selected_meta)
+                        # TODO: Progress bar
+                        errors = self.process_images(self.filenames, selected_meta)
+                        if errors:
+                            # TODO: Better grammar
+                            QMessageBox.warning(
+                                self,
+                                "Errors",
+                                "Some Errors were encountered during processing. This could be because of permanent metadata in images that wasn't able to be deleted."
+                            )
             else:
                 QMessageBox.warning(
                     self,

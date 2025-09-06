@@ -36,18 +36,24 @@ def write_metadata(file_path, new_data):
     else:
         return "Nothing to write."
 
-
+# TODO: deletion of permanent data
 def delete_metadata(file_path, all=True, properties=[]):
     if os.path.exists(file_path):
         if all:
-            command = ["exiftool", "-All=", file_path]
+            command = ["exiftool", "-f", "-All=", file_path]
             result = subprocess.run(command, capture_output=True, text=True)
+            os.remove(file_path + "_original")
             return result.stdout.strip()
         elif properties:
-            command = ["exiftool"]
+            command = ["exiftool", "-f"]
             for property in properties:
                 command.append(f"-{property}=")
             command.append(file_path)
-            print(" ".join(command))
             result = subprocess.run(command, capture_output=True, text=True)
+            try:
+                os.remove(file_path + "_original")
+            except FileNotFoundError:
+                pass
+            if result.stderr.strip():
+                return False
             return result.stdout.strip()

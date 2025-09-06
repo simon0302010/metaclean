@@ -2,6 +2,7 @@ import sys
 from . import exiftool, options
 
 def process_images(filenames, selected_options):
+    errors = 0
     for path in filenames:
         try:
             metadata = list(exiftool.get_metadata(path).keys())
@@ -25,5 +26,9 @@ def process_images(filenames, selected_options):
             if not to_delete:
                 print(f"No matching tags to delete for {path}")
                 continue
-            exiftool.delete_metadata(path, all=False, properties=list(to_delete))
+            result = exiftool.delete_metadata(path, all=False, properties=list(to_delete))
+            if not result:
+                errors += 1
             print(f"Deleted {len(to_delete)} tags from: {path}")
+            
+    return errors
