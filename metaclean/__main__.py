@@ -1,6 +1,9 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMessageBox
-from .core import gui, process, exiftool
+
+from .core import (
+    gui, process, exiftool
+)
 
 
 def process_images(filenames):
@@ -8,6 +11,8 @@ def process_images(filenames):
 
 def main():
     app = QApplication(sys.argv)
+    app.setApplicationName("MetaClean")
+    app.setApplicationDisplayName("MetaClean")
     if exiftool.check_installed():        
         window = gui.MetaClean(process_images=process_images)
         window.show()

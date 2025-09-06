@@ -10,7 +10,10 @@ from PyQt5.QtWidgets import (
     QWidget,
     QListWidget,
     QListWidgetItem,
+    QMessageBox
 )
+
+from . import options
 
 class ClickableLabel(QLabel):
     clicked = pyqtSignal()
@@ -52,6 +55,7 @@ class MetaClean(QMainWindow):
         self.setup_ui()
         
     def setup_ui(self):
+        # create layouts
         layoutV0 = QVBoxLayout()
         layoutH = QHBoxLayout()
         layoutV1 = QVBoxLayout()
@@ -62,6 +66,7 @@ class MetaClean(QMainWindow):
         description = QLabel("Select images and choose metadata to remove")
         layoutV0.addWidget(description, alignment=Qt.AlignCenter)
 
+        # left side
         # add widgets
         self.file_list = QListWidget()
         self.file_list.itemDoubleClicked.connect(self.image_preview)
@@ -84,10 +89,22 @@ class MetaClean(QMainWindow):
 
         layoutV1.addLayout(button_layout)
 
+        # right side
+        self.metadata_list = QListWidget()
+        for name in options.list_options():
+            item = QListWidgetItem(name)
+            item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
+            item.setCheckState(Qt.Unchecked)
+            self.metadata_list.addItem(item)
+            
+        layoutV2.addWidget(self.metadata_list)
+        
+        # continue button
         continue_button = QPushButton("Continue")
         continue_button.clicked.connect(self.on_continue)
         layoutV2.addWidget(continue_button, alignment=Qt.AlignBottom)
 
+        # add layouts together
         layoutH.addLayout(layoutV1, 1)
         layoutH.addLayout(layoutV2, 1)
 
@@ -100,7 +117,7 @@ class MetaClean(QMainWindow):
         
     def add_files(self):
         files, _ = QFileDialog.getOpenFileNames(
-            self, "Select Images", "", "Images (*.png *.jpg *.jpeg *.bmp *.gif)"
+            self, "Select Images", "", "Images (*.png *.jpg *.jpeg *.bmp *.gif *.tif *.tiff *.webp)"
         )
         for file in files:
             if file not in self.filenames:
@@ -124,4 +141,20 @@ class MetaClean(QMainWindow):
         self.preview_windows.append(preview)
 
     def on_continue(self):
-        self.process_images(self.filenames)
+        if self.filenames:
+            reply = QMessageBox.question(
+                self,
+                "Confirm Deletion",
+                "Do you really want to continue and delete the selected metadata from your images?",
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No
+            )
+            if reply == QMessageBox.Yes:
+                if self.process_images:
+                    self.process_images(self.filenames)
+        else:
+            QMessageBox.warning(
+                self,
+                "No Images Selected",
+                "Select images to continue."
+            )
