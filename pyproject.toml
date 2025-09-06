@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "metaclean-gui"
-version = "0.1.1"
+version = "0.1.2"
 description = "App to clean metadata from multiple images"
 readme = "README.md"
 requires-python = ">=3.8,<3.14"
@@ -28,3 +28,9 @@ Homepage = "https://github.com/simon0302010/metaclean"
 
 [project.scripts]
 metaclean = "metaclean.__main__:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"metaclean.assets" = ["*"]

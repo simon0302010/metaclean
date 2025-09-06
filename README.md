@@ -20,19 +20,30 @@ A simple and easy-to-use application to clean metadata from your images.
 
 ## Installation
 
+### From PyPI
+
 You can install MetaClean from pip:
 
 ```bash
 pip install metaclean-gui
 ```
 
+### From AUR (Arch Linux)
+
+For Arch Linux users, MetaClean is available in the AUR:
+
+```bash
+yay -S metaclean-git
+```
+
 ## Usage
 
-After installation, you can run the application from your terminal:
+After installation, run:
 
 ```bash
 metaclean
 ```
+> You can also run it from the start menu if you installed it from the AUR.
 
 ## License
 

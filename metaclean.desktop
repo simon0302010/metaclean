@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=MetaClean
+Comment=Clean metadata from images
+Exec=metaclean
+Terminal=false
+Type=Application
+Categories=Graphics;
+Icon=metaclean
