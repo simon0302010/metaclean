@@ -1,15 +1,49 @@
 import fnmatch
 
 METADATA_OPTIONS = {
-    "Everything": None,
-    "GPS": [
-        "GPSLatitude", "GPSLongitude", "GPSAltitude",
-        "GPSLatitudeRef", "GPSLongitudeRef", "GPSAltitudeRef",
-        "GPSImgDirection", "GPSDestLatitude", "GPSDestLongitude"
+    "Everything (Absolutely Everything)": None,
+    "File": [
+        "FileModifyDate", "FileAccessDate", "FileInodeChangeDate",
+        "FilePermissions", "MIMEType", "FileType", "FileTypeExtension"
+    ],
+    "Image": [
+        "ExifImageWidth", "ExifImageHeight", "JFIFVersion",
+        "BitsPerSample", "ColorComponents", "YCbCrSubSampling",
+        "ImageDescription"
     ],
     "EXIF": [
-        "DateTimeOriginal", "Make", "Model", "Orientation",
-        "ExposureTime", "FNumber", "ISOSpeedRatings"
+        "Make", "Model", "Orientation", "Software", "ModifyDate",
+        "DateTimeOriginal", "CreateDate", "ExposureTime", "FNumber",
+        "ISO", "ShutterSpeed", "Aperture", "ExposureCompensation",
+        "ExposureProgram", "MeteringMode", "Flash", "FocalLength",
+        "FocalLength35efl", "WhiteBalance", "ColorSpace", "ExifVersion",
+        "SubSec*"
+    ],
+    "GPS": [
+        "GPS*"
+    ],
+    "IPTC (captions / credits)": [
+        "Headline", "Caption-Abstract", "ImageDescription", "Credit",
+        "Source", "City", "State", "Country", "Creator", "Copyright",
+        "CreatorTool", "CaptionWriter", "AuthorsPosition", "Title", "Rights",
+        "Instructions"
+    ],
+    "Thumbnail": [
+        "ThumbnailImage", "ThumbnailOffset", "ThumbnailLength",
+        "PreviewImage", "PreviewImageValid", "PreviewImageStart", "PreviewImageLength"
+    ],
+    "ICC (color profile)": [
+        "Profile*", "ICCProfileName", "ProfileCMMType", "ProfileVersion",
+        "ProfileFileSignature", "ProfileDescription", "ProfileCreator",
+        "ProfileDateTime", "ProfileConnectionSpace", "ProfileID"
+    ],
+    "Technical": [
+        "Compression", "EncodingProcess", "JPEGInterchangeFormat*",
+        "CompressionFactor", "BitsPerSample", "ColorComponents",
+        "YCbCrPositioning", "YCbCrSubSampling"
+    ],
+    "MakerNotes": [
+        "MakerNote*", "Warning*"
     ],
 }
 

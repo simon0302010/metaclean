@@ -2,7 +2,6 @@ import sys
 from . import exiftool, options
 
 def process_images(filenames, selected_options):
-    processed = False
     for path in filenames:
         try:
             metadata = list(exiftool.get_metadata(path).keys())
