@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QWidget,
     QListWidget,
-    QListWidgetItem
+    QListWidgetItem,
 )
 
 class MetaClean(QMainWindow):
@@ -18,7 +18,7 @@ class MetaClean(QMainWindow):
         self.filenames = []
         
         self.setWindowTitle("MetaClean")
-        self.setMinimumSize(QSize(400, 300))
+        self.setMinimumSize(QSize(550, 400))
         
         self.setup_ui()
         
@@ -33,9 +33,21 @@ class MetaClean(QMainWindow):
         self.file_list = QListWidget()
         layoutV1.addWidget(self.file_list)
 
-        button = QPushButton("Add Images")
-        button.clicked.connect(self.add_files)
-        layoutV1.addWidget(button, alignment=Qt.AlignBottom)
+        # 
+        button_layout = QHBoxLayout()
+        add_button = QPushButton("Add Images")
+        add_button.clicked.connect(self.add_files)
+        remove_button = QPushButton("Remove selected")
+        remove_button.clicked.connect(self.remove_selected)
+
+        button_layout.addWidget(add_button)
+        button_layout.addWidget(remove_button)
+        
+        max_width = max(add_button.sizeHint().width(), remove_button.sizeHint().width())
+        add_button.setMinimumWidth(max_width)
+        remove_button.setMinimumWidth(max_width)
+
+        layoutV1.addLayout(button_layout)
 
         layoutH.addLayout(layoutV1, 1)
         layoutH.addLayout(layoutV2, 1)
@@ -51,6 +63,12 @@ class MetaClean(QMainWindow):
         dlg.setNameFilter("Images (*.png *.jpg *.jpeg *.bmp *.gif)")
         if dlg.exec_():
             for filepath in dlg.selectedFiles():
-                if filepath not in self.file_list:
+                if filepath not in self.filenames:
                     new_item = QListWidgetItem(filepath)
                     self.file_list.addItem(new_item)
+                    self.filenames.append(filepath)
+
+    def remove_selected(self):
+        for item in self.file_list.selectedItems():
+            self.filenames.remove(item.text())
+            self.file_list.takeItem(self.file_list.row(item))
