@@ -1,4 +1,4 @@
-# reused from simon0302010/MetaView
+# reused and modified from simon0302010/MetaView
 
 import json
 import os
@@ -37,8 +37,14 @@ def write_metadata(file_path, new_data):
         return "Nothing to write."
 
 
-def delete_metadata(file_path, all=True):
-    if os.path.exists(file_path) and all:
-        command = ["exiftool", "-All=", file_path]
-        result = subprocess.run(command, capture_output=True, text=True)
-        return result.stdout.strip()
+def delete_metadata(file_path, all=True, properties=[]):
+    if os.path.exists(file_path):
+        if all:
+            command = ["exiftool", "-All=", file_path]
+            result = subprocess.run(command, capture_output=True, text=True)
+            return result.stdout.strip()
+        elif properties:
+            command = ["exiftool"]
+            for property in properties:
+                command.append(f"-{property}=")
+            command.append(file_path)
