@@ -1,6 +1,7 @@
 ![Hackatime](https://hackatime-badge.hackclub.com/U08HC7N4JJW/metaclean)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/simon0302010/metaclean/.github%2Fworkflows%2Fpython-install.yml)
 ![PyPI - Version](https://img.shields.io/pypi/v/metaclean-gui)
+![AUR Version](https://img.shields.io/aur/version/metaclean-git)
 
 # MetaClean
 
