@@ -1,4 +1,5 @@
-from PyQt5.QtCore import QSize, Qt
+from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtCore import QSize, Qt, pyqtSignal
 from PyQt5.QtWidgets import (
     QMainWindow,
     QPushButton,
@@ -11,11 +12,38 @@ from PyQt5.QtWidgets import (
     QListWidgetItem,
 )
 
+class ClickableLabel(QLabel):
+    clicked = pyqtSignal()
+    
+    def mousePressEvent(self, event):
+        self.clicked.emit()
+        super().mousePressEvent(event)
+
+class PreviewWindow(QWidget):
+    def __init__(self, image_path):
+        super().__init__()
+        
+        self.setWindowFlag(Qt.FramelessWindowHint)
+        self.setWindowTitle("Image Preview")
+        
+        layout = QVBoxLayout()
+        image_label = ClickableLabel()
+        image_preview = QPixmap(image_path)
+        image_preview = image_preview.scaled(
+            400, image_preview.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation
+        )
+        image_label.setPixmap(image_preview)
+        image_label.clicked.connect(self.close)
+        layout.addWidget(image_label)
+        
+        self.setLayout(layout)
+
 class MetaClean(QMainWindow):
     def __init__(self):
         super().__init__()
         
         self.filenames = []
+        self.preview_windows = []
         
         self.setWindowTitle("MetaClean")
         self.setMinimumSize(QSize(550, 400))
@@ -35,6 +63,7 @@ class MetaClean(QMainWindow):
 
         # add widgets
         self.file_list = QListWidget()
+        self.file_list.itemDoubleClicked.connect(self.image_preview)
         layoutV1.addWidget(self.file_list)
 
         # add buttons
@@ -55,6 +84,7 @@ class MetaClean(QMainWindow):
         layoutV1.addLayout(button_layout)
 
         continue_button = QPushButton("Continue")
+        continue_button.clicked.connect(self.process_images)
         layoutV2.addWidget(continue_button, alignment=Qt.AlignBottom)
 
         layoutH.addLayout(layoutV1, 1)
@@ -68,17 +98,29 @@ class MetaClean(QMainWindow):
         self.setCentralWidget(container)
         
     def add_files(self):
-        dlg = QFileDialog(self)
-        dlg.setFileMode(QFileDialog.ExistingFiles)
-        dlg.setNameFilter("Images (*.png *.jpg *.jpeg *.bmp *.gif)")
-        if dlg.exec_():
-            for filepath in dlg.selectedFiles():
-                if filepath not in self.filenames:
-                    new_item = QListWidgetItem(filepath)
-                    self.file_list.addItem(new_item)
-                    self.filenames.append(filepath)
+        files, _ = QFileDialog.getOpenFileNames(
+            self, "Select Images", "", "Images (*.png *.jpg *.jpeg *.bmp *.gif)"
+        )
+        for file in files:
+            if file not in self.filenames:
+                self.filenames.append(file)
+                item = QListWidgetItem()
+                pixmap = QPixmap(file)
+                if not pixmap.isNull():
+                    icon = QIcon(pixmap.scaled(32, 32, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+                    item.setIcon(icon)
+                item.setText(file)
+                self.file_list.addItem(item)
 
     def remove_selected(self):
         for item in self.file_list.selectedItems():
             self.filenames.remove(item.text())
             self.file_list.takeItem(self.file_list.row(item))
+
+    def image_preview(self, item):
+        preview = PreviewWindow(item.text())
+        preview.show()
+        self.preview_windows.append(preview)
+
+    def process_images(self):
+        print(self.filenames)
