@@ -6,8 +6,8 @@ from .core import (
 )
 
 
-def process_images(filenames):
-    print(filenames)
+def process_images(filenames, selected_options):
+    process.process_images(filenames, selected_options)
 
 def main():
     app = QApplication(sys.argv)

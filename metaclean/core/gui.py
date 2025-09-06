@@ -140,21 +140,38 @@ class MetaClean(QMainWindow):
         preview.show()
         self.preview_windows.append(preview)
 
+    def get_selected_metadata(self):
+        checked = []
+        for i in range(self.metadata_list.count()):
+            item = self.metadata_list.item(i)
+            if item.checkState() == Qt.Checked:
+                checked.append(item.text())
+        print(checked)
+        return checked
+
     def on_continue(self):
-        if self.filenames:
-            reply = QMessageBox.question(
-                self,
-                "Confirm Deletion",
-                "Do you really want to continue and delete the selected metadata from your images?",
-                QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.No
-            )
-            if reply == QMessageBox.Yes:
-                if self.process_images:
-                    self.process_images(self.filenames)
+        selected_meta = self.get_selected_metadata()
+        if selected_meta:
+            if self.filenames:
+                reply = QMessageBox.question(
+                    self,
+                    "Confirm Deletion",
+                    "Do you really want to continue and delete the selected metadata from your images?",
+                    QMessageBox.Yes | QMessageBox.No,
+                    QMessageBox.No
+                )
+                if reply == QMessageBox.Yes:
+                    if self.process_images:
+                        self.process_images(self.filenames, selected_meta)
+            else:
+                QMessageBox.warning(
+                    self,
+                    "No Images Selected",
+                    "Select images to continue."
+                )
         else:
             QMessageBox.warning(
                 self,
-                "No Images Selected",
-                "Select images to continue."
+                "Nothing to remove",
+                "Choose the metadata to remove to continue."
             )
