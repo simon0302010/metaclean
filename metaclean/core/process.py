@@ -2,6 +2,7 @@ import sys
 from . import exiftool, options
 
 def process_images(filenames, selected_options):
+    processed = False
     for path in filenames:
         try:
             metadata = list(exiftool.get_metadata(path).keys())
@@ -21,11 +22,9 @@ def process_images(filenames, selected_options):
         if delete_all:
             exiftool.delete_metadata(path, all=True)
             print(f"Deleted all metadata from: {path}")
-            return True
         else:
             if not to_delete:
                 print(f"No matching tags to delete for {path}")
                 continue
             exiftool.delete_metadata(path, all=False, properties=list(to_delete))
             print(f"Deleted {len(to_delete)} tags from: {path}")
-            return True

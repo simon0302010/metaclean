@@ -146,7 +146,6 @@ class MetaClean(QMainWindow):
             item = self.metadata_list.item(i)
             if item.checkState() == Qt.Checked:
                 checked.append(item.text())
-        print(checked)
         return checked
 
     def on_continue(self):

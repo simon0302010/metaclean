@@ -48,3 +48,6 @@ def delete_metadata(file_path, all=True, properties=[]):
             for property in properties:
                 command.append(f"-{property}=")
             command.append(file_path)
+            print(" ".join(command))
+            result = subprocess.run(command, capture_output=True, text=True)
+            return result.stdout.strip()
