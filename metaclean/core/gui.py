@@ -39,11 +39,12 @@ class PreviewWindow(QWidget):
         self.setLayout(layout)
 
 class MetaClean(QMainWindow):
-    def __init__(self):
+    def __init__(self, process_images=None):
         super().__init__()
         
         self.filenames = []
         self.preview_windows = []
+        self.process_images = process_images
         
         self.setWindowTitle("MetaClean")
         self.setMinimumSize(QSize(550, 400))
@@ -84,7 +85,7 @@ class MetaClean(QMainWindow):
         layoutV1.addLayout(button_layout)
 
         continue_button = QPushButton("Continue")
-        continue_button.clicked.connect(self.process_images)
+        continue_button.clicked.connect(self.on_continue)
         layoutV2.addWidget(continue_button, alignment=Qt.AlignBottom)
 
         layoutH.addLayout(layoutV1, 1)
@@ -122,5 +123,5 @@ class MetaClean(QMainWindow):
         preview.show()
         self.preview_windows.append(preview)
 
-    def process_images(self):
-        print(self.filenames)
+    def on_continue(self):
+        self.process_images(self.filenames)
