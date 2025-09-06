@@ -23,17 +23,21 @@ class MetaClean(QMainWindow):
         self.setup_ui()
         
     def setup_ui(self):
+        layoutV0 = QVBoxLayout()
         layoutH = QHBoxLayout()
         layoutV1 = QVBoxLayout()
         layoutV2 = QVBoxLayout()
 
-        layoutH.setSpacing(20)
+        layoutH.setSpacing(10)
+
+        description = QLabel("Select images and choose metadata to remove")
+        layoutV0.addWidget(description, alignment=Qt.AlignCenter)
 
         # add widgets
         self.file_list = QListWidget()
         layoutV1.addWidget(self.file_list)
 
-        # 
+        # add buttons
         button_layout = QHBoxLayout()
         add_button = QPushButton("Add Images")
         add_button.clicked.connect(self.add_files)
@@ -43,17 +47,23 @@ class MetaClean(QMainWindow):
         button_layout.addWidget(add_button)
         button_layout.addWidget(remove_button)
         
+        # ensure buttons are the same size
         max_width = max(add_button.sizeHint().width(), remove_button.sizeHint().width())
         add_button.setMinimumWidth(max_width)
         remove_button.setMinimumWidth(max_width)
 
         layoutV1.addLayout(button_layout)
 
+        continue_button = QPushButton("Continue")
+        layoutV2.addWidget(continue_button, alignment=Qt.AlignBottom)
+
         layoutH.addLayout(layoutV1, 1)
         layoutH.addLayout(layoutV2, 1)
 
+        layoutV0.addLayout(layoutH)
+
         container = QWidget()
-        container.setLayout(layoutH)
+        container.setLayout(layoutV0)
 
         self.setCentralWidget(container)
         
