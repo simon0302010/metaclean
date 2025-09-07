@@ -1,7 +1,7 @@
 # TODO: Multi-Language support
 
 from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5.QtCore import QSize, Qt, pyqtSignal, QThread
+from PyQt5.QtCore import QSize, Qt, pyqtSignal, QThread, QUrl
 from PyQt5.QtWidgets import (
     QMainWindow,
     QPushButton,
@@ -18,6 +18,33 @@ from PyQt5.QtWidgets import (
 
 from . import options
 
+
+class DragDropListWidget(QListWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setAcceptDrops(True)
+        self.parent_window = parent
+        
+    def dragEnterEvent(self, e):
+        if e.mimeData().hasUrls():
+            e.accept()
+        else:
+            e.ignore()
+            
+    def dragMoveEvent(self, e):
+        if e.mimeData().hasUrls():
+            e.accept()
+        else:
+            e.ignore()
+            
+    def dropEvent(self, event):
+        files = [url.toLocalFile() for url in event.mimeData().urls()]
+        image_extensions = {'.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tif', '.tiff', '.webp'}
+        image_files = [f for f in files if any(f.lower().endswith(ext) for ext in image_extensions)]
+        if self.parent_window:
+            self.parent_window.add_files_from_list(image_files)
+            
+        event.accept()
 
 class ProcessingThread(QThread):
     finished_signal = pyqtSignal(int)
@@ -80,12 +107,12 @@ class MetaClean(QMainWindow):
 
         layoutH.setSpacing(10)
 
-        description = QLabel("Select images and choose metadata to remove")
+        description = QLabel("Select images and choose metadata to remove (Drag & Drop supported)")
         layoutV0.addWidget(description, alignment=Qt.AlignCenter)
 
         # left side
         # add widgets
-        self.file_list = QListWidget()
+        self.file_list = DragDropListWidget(self)
         self.file_list.itemDoubleClicked.connect(self.image_preview)
         layoutV1.addWidget(self.file_list)
 
@@ -132,10 +159,8 @@ class MetaClean(QMainWindow):
 
         self.setCentralWidget(container)
         
-    def add_files(self):
-        files, _ = QFileDialog.getOpenFileNames(
-            self, "Select Images", "", "Images (*.png *.jpg *.jpeg *.bmp *.gif *.tif *.tiff *.webp)"
-        )
+    def add_files_from_list(self, files):
+        # add files from a list (used by drag and drop)
         for file in files:
             if file not in self.filenames:
                 self.filenames.append(file)
@@ -146,6 +171,12 @@ class MetaClean(QMainWindow):
                     item.setIcon(icon)
                 item.setText(file)
                 self.file_list.addItem(item)
+
+    def add_files(self):
+        files, _ = QFileDialog.getOpenFileNames(
+            self, "Select Images", "", "Images (*.png *.jpg *.jpeg *.bmp *.gif *.tif *.tiff *.webp)"
+        )
+        self.add_files_from_list(files)
 
     def remove_selected(self):
         for item in self.file_list.selectedItems():
