@@ -14,7 +14,6 @@ from PyQt5.QtWidgets import (
     QListWidgetItem,
     QMessageBox,
     QProgressDialog,
-    QApplication
 )
 
 from . import options
