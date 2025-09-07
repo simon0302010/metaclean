@@ -9,8 +9,8 @@ from .core import (
 )
 
 
-def process_images(filenames, selected_options):
-    return process.process_images(filenames, selected_options)
+def process_images(filenames, selected_options, is_cancelled):
+    return process.process_images(filenames, selected_options, is_cancelled)
 
 def main():
     app = QApplication(sys.argv)

@@ -3,9 +3,7 @@ import fnmatch
 import importlib.resources
 
 
-data_files = importlib.resources.files("metaclean.data")
-options_path = data_files / "options.json"
-with importlib.resources.as_file(options_path) as options_file:
+with importlib.resources.open_text("metaclean.data", "options.json") as options_file:
     metadata_options = json.load(options_file)
 
 def get_fields(option_name, available_tags=None):

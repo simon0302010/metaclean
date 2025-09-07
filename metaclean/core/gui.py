@@ -54,10 +54,14 @@ class ProcessingThread(QThread):
         self.filenames = filenames
         self.selected_meta = selected_meta
         self.process_images_func = process_images_func
-    
+        self._is_cancelled = False
+
     def run(self):
-        errors = self.process_images_func(self.filenames, self.selected_meta)
+        errors = self.process_images_func(self.filenames, self.selected_meta, lambda: self._is_cancelled)
         self.finished_signal.emit(errors)
+
+    def cancel(self):
+        self._is_cancelled = True
 
 class ClickableLabel(QLabel):
     clicked = pyqtSignal()
@@ -203,7 +207,7 @@ class MetaClean(QMainWindow):
                 reply = QMessageBox.question(
                     self,
                     "Confirm Deletion",
-                    "Do you really want to continue and delete the selected metadata from your images?",
+                    "Delete selected metadata from these images?",
                     QMessageBox.Yes | QMessageBox.No,
                     QMessageBox.No
                 )
@@ -220,7 +224,7 @@ class MetaClean(QMainWindow):
             QMessageBox.warning(
                 self,
                 "Nothing to remove",
-                "Choose the metadata to remove to continue."
+                "Please select metadata options to remove."
             )
     
     def start_processing(self, selected_meta):
@@ -238,13 +242,18 @@ class MetaClean(QMainWindow):
     
     def processing_finished(self, errors):
         self.progress_dialog.close()
+
+        if self.processing_thread and self.processing_thread._is_cancelled:
+            QMessageBox.information(self, "Cancelled", "Processing was cancelled.")
+            return
         
         if errors:
-            QMessageBox.warning(
-                self,
-                "Processing Warnings",
-                "Some warnings were encountered during processing. This may occur when certain metadata cannot be removed due to permanent tags."
-            )
+            msg_box = QMessageBox(self)
+            msg_box.setIcon(QMessageBox.Warning)
+            msg_box.setWindowTitle("Processing Warnings")
+            msg_box.setText(f"Couldn't remove all requested metadata from {errors} file(s). ")
+            msg_box.setInformativeText("To prevent file corruption, essential metadata was preserved. Your files are safe and openable.")
+            msg_box.exec_()
         else:
             QMessageBox.information(
                 self,
@@ -254,6 +263,5 @@ class MetaClean(QMainWindow):
     
     def cancel_processing(self):
         if self.processing_thread and self.processing_thread.isRunning():
-            self.processing_thread.terminate()
-            self.processing_thread.wait()
-            QMessageBox.information(self, "Cancelled", "Processing was cancelled.")
+            self.processing_thread.cancel()
+            self.progress_dialog.setLabelText("Cancelling...")

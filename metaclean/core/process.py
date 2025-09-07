@@ -40,10 +40,20 @@ def process_single_image(path, selected_options):
             print(f"Deleted {len(to_delete)} tags from: {path}")
             return 0
 
-def process_images(filenames, selected_options):
+def process_images(filenames, selected_options, is_cancelled):
     errors = 0
     with concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
-        futures = [executor.submit(process_single_image, path, selected_options) for path in filenames]
+        futures = {executor.submit(process_single_image, path, selected_options): path for path in filenames}
+        
         for future in concurrent.futures.as_completed(futures):
-            errors += future.result()
+            if is_cancelled():
+                for f in futures:
+                    if not f.done():
+                        f.cancel()
+                break
+            
+            try:
+                errors += future.result()
+            except concurrent.futures.CancelledError:
+                pass
     return errors
