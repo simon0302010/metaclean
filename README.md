@@ -14,6 +14,10 @@ A simple and easy-to-use application to clean metadata from your images.
 *   **Image preview:** Double-click on an image to see a preview.
 *   **Cross-platform:** Works on Linux and Windows.
 
+## Demo
+
+<video src="demo.mp4" controls width="600"></video>
+
 ## Requirements
 
 *   Python 3.8+

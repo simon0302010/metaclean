@@ -16,7 +16,7 @@ from PyQt5.QtWidgets import (
     QProgressDialog,
 )
 
-from . import options
+from metaclean.core import options
 
 
 class DragDropListWidget(QListWidget):
@@ -248,18 +248,17 @@ class MetaClean(QMainWindow):
             return
         
         if errors:
-            msg_box = QMessageBox(self)
-            msg_box.setIcon(QMessageBox.Warning)
-            msg_box.setWindowTitle("Processing Warnings")
-            msg_box.setText(f"Couldn't remove all requested metadata from {errors} file(s). ")
-            msg_box.setInformativeText("To prevent file corruption, essential metadata was preserved. Your files are safe and openable.")
-            msg_box.exec_()
-        else:
             QMessageBox.information(
                 self,
                 "Processing Complete",
-                f"Successfully processed {len(self.filenames)} images."
+                "Some metadata was not removed from the image(s) to avoid file corruption."
             )
+        
+        QMessageBox.information(
+            self,
+            "Processing Complete",
+            f"Successfully processed {len(self.filenames)} images."
+        )
     
     def cancel_processing(self):
         if self.processing_thread and self.processing_thread.isRunning():

@@ -2,7 +2,7 @@ import os
 import sys
 import concurrent.futures
 
-from . import exiftool, options
+from metaclean.core import exiftool, options
 
 def process_single_image(path, selected_options):
     try:
