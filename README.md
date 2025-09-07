@@ -17,7 +17,7 @@ A simple and easy-to-use application to clean metadata from your images.
 ## Requirements
 
 *   Python 3.8+
-*   [ExifTool](https://exiftool.org/) must be installed and available in your system's PATH.
+*   [ExifTool](https://exiftool.org/) must be installed and available in your system's PATH. (Automcatically installed if you install from the AUR)
 
 ## Installation
 
@@ -34,7 +34,7 @@ pip install metaclean-gui
 For Arch Linux users, MetaClean is available in the AUR:
 
 ```bash
-yay -S metaclean-git
+yay -Sy metaclean-git
 ```
 
 ## Usage
