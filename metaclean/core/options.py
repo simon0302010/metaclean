@@ -1,7 +1,7 @@
 import fnmatch
 
 METADATA_OPTIONS = METADATA_OPTIONS = {
-    "Everything (All Metadata)": None,
+    "Everything": None,
     "File System Information": [
         "FileModifyDate",
         "FileAccessDate",
@@ -64,6 +64,7 @@ METADATA_OPTIONS = METADATA_OPTIONS = {
         "HDRImageType",
         "SensitivityType",
         "ISOSpeed",
+        "NikonCaptureVersion"
     ],
     "Lens and Focus Details": [
         "FocalLength",

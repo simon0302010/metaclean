@@ -42,7 +42,12 @@ def delete_metadata(file_path, all=True, properties=[]):
         if all:
             command = ["exiftool", "-f", "-All=", file_path]
             result = subprocess.run(command, capture_output=True, text=True)
-            os.remove(file_path + "_original")
+            try:
+                os.remove(file_path + "_original")
+            except FileNotFoundError:
+                return False
+            if result.stderr.strip():
+                return False
             return result.stdout.strip()
         elif properties:
             command = ["exiftool", "-f"]
@@ -53,7 +58,7 @@ def delete_metadata(file_path, all=True, properties=[]):
             try:
                 os.remove(file_path + "_original")
             except FileNotFoundError:
-                pass
+                return False
             if result.stderr.strip():
                 return False
             return result.stdout.strip()

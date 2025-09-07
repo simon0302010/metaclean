@@ -20,8 +20,12 @@ def process_images(filenames, selected_options):
             to_delete.update(fields)
 
         if delete_all:
-            exiftool.delete_metadata(path, all=True)
-            print(f"Deleted all metadata from: {path}")
+            result = exiftool.delete_metadata(path, all=True)
+            if not result:
+                errors += 1
+                print(f"Tried to delete all metadata from: {path}")
+            else:
+                print(f"Deleted all metadata from: {path}")
         else:
             if not to_delete:
                 print(f"No matching tags to delete for {path}")
@@ -29,6 +33,8 @@ def process_images(filenames, selected_options):
             result = exiftool.delete_metadata(path, all=False, properties=list(to_delete))
             if not result:
                 errors += 1
-            print(f"Deleted {len(to_delete)} tags from: {path}")
+                print(f"Tried to delete {len(to_delete)} tags from: {path}")
+            else:
+                print(f"Deleted {len(to_delete)} tags from: {path}")
             
     return errors

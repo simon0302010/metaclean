@@ -1,7 +1,7 @@
 # TODO: Multi-Language support
 
 from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5.QtCore import QSize, Qt, pyqtSignal, QTimer
+from PyQt5.QtCore import QSize, Qt, pyqtSignal, QThread
 from PyQt5.QtWidgets import (
     QMainWindow,
     QPushButton,
@@ -18,6 +18,20 @@ from PyQt5.QtWidgets import (
 )
 
 from . import options
+
+
+class ProcessingThread(QThread):
+    finished_signal = pyqtSignal(int)
+    
+    def __init__(self, filenames, selected_meta, process_images_func):
+        super().__init__()
+        self.filenames = filenames
+        self.selected_meta = selected_meta
+        self.process_images_func = process_images_func
+    
+    def run(self):
+        errors = self.process_images_func(self.filenames, self.selected_meta)
+        self.finished_signal.emit(errors)
 
 class ClickableLabel(QLabel):
     clicked = pyqtSignal()
@@ -165,27 +179,7 @@ class MetaClean(QMainWindow):
                 )
                 if reply == QMessageBox.Yes:
                     if self.process_images:
-                        # TODO: Run in separate thread
-                        progress = QProgressDialog("Processing images...", "Cancel", 0, 0, self)
-                        progress.setWindowModality(Qt.WindowModal)
-                        progress.show()
-                        
-                        QApplication.processEvents()
-                        errors = self.process_images(self.filenames, selected_meta)
-                        
-                        progress.close()
-                        if errors:
-                            QMessageBox.warning(
-                                self,
-                                "Processing Warnings",
-                                "Some warnings were encountered during processing. This may occur when certain metadata cannot be removed due to permanent tags."
-                            )
-                        else:
-                            QMessageBox.information(
-                                self,
-                                "Processing Complete",
-                                f"Successfully processed {len(self.filenames)} images."
-                            )
+                        self.start_processing(selected_meta)
             else:
                 QMessageBox.warning(
                     self,
@@ -198,3 +192,38 @@ class MetaClean(QMainWindow):
                 "Nothing to remove",
                 "Choose the metadata to remove to continue."
             )
+    
+    def start_processing(self, selected_meta):
+        # create progress dialog
+        self.progress_dialog = QProgressDialog("Processing images...", "Cancel", 0, 0, self)
+        self.progress_dialog.setWindowModality(Qt.WindowModal)
+        self.progress_dialog.canceled.connect(self.cancel_processing)
+        
+        # start processing thread
+        self.processing_thread = ProcessingThread(self.filenames, selected_meta, self.process_images)
+        self.processing_thread.finished_signal.connect(self.processing_finished)
+        
+        self.processing_thread.start()
+        self.progress_dialog.show()
+    
+    def processing_finished(self, errors):
+        self.progress_dialog.close()
+        
+        if errors:
+            QMessageBox.warning(
+                self,
+                "Processing Warnings",
+                "Some warnings were encountered during processing. This may occur when certain metadata cannot be removed due to permanent tags."
+            )
+        else:
+            QMessageBox.information(
+                self,
+                "Processing Complete",
+                f"Successfully processed {len(self.filenames)} images."
+            )
+    
+    def cancel_processing(self):
+        if self.processing_thread and self.processing_thread.isRunning():
+            self.processing_thread.terminate()
+            self.processing_thread.wait()
+            QMessageBox.information(self, "Cancelled", "Processing was cancelled.")
