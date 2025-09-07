@@ -16,7 +16,10 @@ A simple and easy-to-use application to clean metadata from your images.
 
 ## Demo
 
-<video src="demo.mp4" controls width="600"></video>
+<p align="center">
+  <video src="https://raw.githubusercontent.com/simon0302010/metaclean/refs/heads/main/demo.mp4" width="450" controls></video>
+</p>
+
 
 ## Requirements
 
