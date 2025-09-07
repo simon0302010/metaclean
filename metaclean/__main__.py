@@ -17,8 +17,10 @@ def main():
     app.setApplicationName("MetaClean")
     app.setApplicationDisplayName("MetaClean")
     
-    with importlib.resources.path("metaclean.assets", "icon128.png") as icon_path:
-        app.setWindowIcon(QIcon(str(icon_path)))
+    icon_files = importlib.resources.files("metaclean.assets")
+    icon_path = icon_files / "icon128.png"
+    with importlib.resources.as_file(icon_path) as icon_file:
+        app.setWindowIcon(QIcon(str(icon_file)))
     
     if exiftool.check_installed():        
         window = gui.MetaClean(process_images=process_images)
