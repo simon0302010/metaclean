@@ -33,6 +33,10 @@ You can install MetaClean from pip:
 pip install metaclean-gui
 ```
 
+### Windows Binary
+
+You can download a pre-built Windows binary (which includes ExifTool) from the [Releases](https://github.com/simon0302010/metaclean/releases) page.
+
 ### From AUR (Arch Linux)
 
 For Arch Linux users, MetaClean is available in the AUR:
