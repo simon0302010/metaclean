@@ -55,11 +55,6 @@ paru -S metaclean-git
 ### Prerequisites
 MetaClean requires [ExifTool](https://exiftool.org/) to function. Install it first:
 
-**Linux (Ubuntu/Debian):**
-```bash
-sudo apt install libimage-exiftool-perl
-```
-
 **Linux:**
 ```bash
 # Use your distribution's package manager
@@ -86,20 +81,6 @@ Once ExifTool is installed and accessible from your command line:
 
 ```bash
 pip install metaclean-gui
-```
-
-## Verify Installation
-
-To confirm MetaClean is installed correctly:
-
-```bash
-metaclean --version
-```
-
-If you encounter issues, ensure ExifTool is properly installed and accessible:
-
-```bash
-exiftool -ver
 ```
 
 ## Usage
