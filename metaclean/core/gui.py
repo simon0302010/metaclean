@@ -1,5 +1,7 @@
+# TODO: Multi-Language support
+
 from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5.QtCore import QSize, Qt, pyqtSignal
+from PyQt5.QtCore import QSize, Qt, pyqtSignal, QTimer
 from PyQt5.QtWidgets import (
     QMainWindow,
     QPushButton,
@@ -10,7 +12,9 @@ from PyQt5.QtWidgets import (
     QWidget,
     QListWidget,
     QListWidgetItem,
-    QMessageBox
+    QMessageBox,
+    QProgressDialog,
+    QApplication
 )
 
 from . import options
@@ -161,14 +165,26 @@ class MetaClean(QMainWindow):
                 )
                 if reply == QMessageBox.Yes:
                     if self.process_images:
-                        # TODO: Progress bar
+                        # TODO: Run in separate thread
+                        progress = QProgressDialog("Processing images...", "Cancel", 0, 0, self)
+                        progress.setWindowModality(Qt.WindowModal)
+                        progress.show()
+                        
+                        QApplication.processEvents()
                         errors = self.process_images(self.filenames, selected_meta)
+                        
+                        progress.close()
                         if errors:
-                            # TODO: Better grammar
                             QMessageBox.warning(
                                 self,
-                                "Errors",
-                                "Some Errors were encountered during processing. This could be because of permanent metadata in images that wasn't able to be deleted."
+                                "Processing Warnings",
+                                "Some warnings were encountered during processing. This may occur when certain metadata cannot be removed due to permanent tags."
+                            )
+                        else:
+                            QMessageBox.information(
+                                self,
+                                "Processing Complete",
+                                f"Successfully processed {len(self.filenames)} images."
                             )
             else:
                 QMessageBox.warning(

@@ -461,6 +461,9 @@ METADATA_OPTIONS = METADATA_OPTIONS = {
 def get_fields(option_name, available_tags=None):
     patterns = METADATA_OPTIONS.get(option_name)
 
+    if patterns is None:
+        return None
+
     if available_tags is None:
         return list(patterns)
 
