@@ -14,27 +14,73 @@ A simple and easy-to-use application to clean metadata from your images.
 *   **Image preview:** Double-click on an image to see a preview.
 *   **Cross-platform:** Works on Linux and Windows.
 
+## Demo
+
+https://github.com/user-attachments/assets/8897d9dc-c36c-41ad-9c71-aa4d26c423eb
+
 ## Requirements
 
+*   A Computer
 *   Python 3.8+
-*   [ExifTool](https://exiftool.org/) must be installed and available in your system's PATH.
 
-## Installation
+# Installation
 
-### From PyPI
+MetaClean can be installed using several methods depending on your operating system and preferences.
 
-You can install MetaClean from pip:
+## Quick Install
+
+### Windows
+**Recommended for most Windows users**
+
+Download the pre-built executable from the [Releases page](https://github.com/simon0302010/metaclean/releases). This bundle includes ExifTool, so no additional setup is required.
+
+1. Download the latest `.exe` file
+2. Run the executable directly - no installation needed
+
+### Arch Linux
+**For Arch-based distributions**
+
+Install directly from the AUR using your preferred AUR helper:
+
+```bash
+# Using yay
+yay -S metaclean-git
+
+# Using paru
+paru -S metaclean-git
+```
+
+## Universal Install (PyPI)
+
+### Prerequisites
+MetaClean requires [ExifTool](https://exiftool.org/) to function. Install it first:
+
+**Linux:**
+```bash
+# Use your distribution's package manager
+sudo apt install libimage-exiftool-perl      # Debian/Ubuntu
+sudo dnf install perl-Image-ExifTool         # Fedora/RHEL
+sudo pacman -S perl-image-exiftool           # Arch Linux
+```
+
+**macOS:**
+```bash
+# Using Homebrew
+brew install exiftool
+
+# Using MacPorts
+sudo port install p5-image-exiftool
+```
+
+**Windows:**
+1. Download ExifTool from the [official website](https://exiftool.org/)
+2. Extract and add the folder to your system PATH
+
+### Install MetaClean
+Once ExifTool is installed and accessible from your command line:
 
 ```bash
 pip install metaclean-gui
-```
-
-### From AUR (Arch Linux)
-
-For Arch Linux users, MetaClean is available in the AUR:
-
-```bash
-yay -S metaclean-git
 ```
 
 ## Usage

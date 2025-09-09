@@ -4,21 +4,23 @@ import importlib.resources
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMessageBox
 
-from .core import (
+from metaclean.core import (
     gui, process, exiftool
 )
 
 
-def process_images(filenames, selected_options):
-    process.process_images(filenames, selected_options)
+def process_images(filenames, selected_options, is_cancelled):
+    return process.process_images(filenames, selected_options, is_cancelled)
 
 def main():
     app = QApplication(sys.argv)
     app.setApplicationName("MetaClean")
     app.setApplicationDisplayName("MetaClean")
     
-    with importlib.resources.path("metaclean.assets", "icon128.png") as icon_path:
-        app.setWindowIcon(QIcon(str(icon_path)))
+    icon_files = importlib.resources.files("metaclean.assets")
+    icon_path = icon_files / "icon128.png"
+    with importlib.resources.as_file(icon_path) as icon_file:
+        app.setWindowIcon(QIcon(str(icon_file)))
     
     if exiftool.check_installed():        
         window = gui.MetaClean(process_images=process_images)

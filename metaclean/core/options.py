@@ -1,54 +1,16 @@
+import json
 import fnmatch
+import importlib.resources
 
-METADATA_OPTIONS = {
-    "Everything (Absolutely Everything)": None,
-    "File": [
-        "FileModifyDate", "FileAccessDate", "FileInodeChangeDate",
-        "FilePermissions", "MIMEType", "FileType", "FileTypeExtension"
-    ],
-    "Image": [
-        "ExifImageWidth", "ExifImageHeight", "JFIFVersion",
-        "BitsPerSample", "ColorComponents", "YCbCrSubSampling",
-        "ImageDescription"
-    ],
-    "EXIF": [
-        "Make", "Model", "Orientation", "Software", "ModifyDate",
-        "DateTimeOriginal", "CreateDate", "ExposureTime", "FNumber",
-        "ISO", "ShutterSpeed", "Aperture", "ExposureCompensation",
-        "ExposureProgram", "MeteringMode", "Flash", "FocalLength",
-        "FocalLength35efl", "WhiteBalance", "ColorSpace", "ExifVersion",
-        "SubSec*"
-    ],
-    "GPS": [
-        "GPS*"
-    ],
-    "IPTC (captions / credits)": [
-        "Headline", "Caption-Abstract", "ImageDescription", "Credit",
-        "Source", "City", "State", "Country", "Creator", "Copyright",
-        "CreatorTool", "CaptionWriter", "AuthorsPosition", "Title", "Rights",
-        "Instructions"
-    ],
-    "Thumbnail": [
-        "ThumbnailImage", "ThumbnailOffset", "ThumbnailLength",
-        "PreviewImage", "PreviewImageValid", "PreviewImageStart", "PreviewImageLength"
-    ],
-    "ICC (color profile)": [
-        "Profile*", "ICCProfileName", "ProfileCMMType", "ProfileVersion",
-        "ProfileFileSignature", "ProfileDescription", "ProfileCreator",
-        "ProfileDateTime", "ProfileConnectionSpace", "ProfileID"
-    ],
-    "Technical": [
-        "Compression", "EncodingProcess", "JPEGInterchangeFormat*",
-        "CompressionFactor", "BitsPerSample", "ColorComponents",
-        "YCbCrPositioning", "YCbCrSubSampling"
-    ],
-    "MakerNotes": [
-        "MakerNote*", "Warning*"
-    ],
-}
+
+with importlib.resources.open_text("metaclean.data", "options.json") as options_file:
+    metadata_options = json.load(options_file)
 
 def get_fields(option_name, available_tags=None):
-    patterns = METADATA_OPTIONS.get(option_name)
+    patterns = metadata_options.get(option_name)
+
+    if patterns is None:
+        return None
 
     if available_tags is None:
         return list(patterns)
@@ -65,5 +27,6 @@ def get_fields(option_name, available_tags=None):
 
     return list(matched)
 
+
 def list_options():
-    return list(METADATA_OPTIONS.keys())
+    return list(metadata_options.keys())
